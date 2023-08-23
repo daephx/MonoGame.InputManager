@@ -91,6 +91,10 @@ namespace A1r.Input
             previousKeyboardState = currentKeyboardState;
             currentMouseState = Mouse.GetState();
             previousMouseState = currentMouseState;
+        }
+
+        public override void Initialize()
+        {
             FindNewGamepads();
         }
 

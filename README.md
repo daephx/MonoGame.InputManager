@@ -72,19 +72,25 @@ public class Peace : Game
 
     public Peace()
     {
-        // Construct a new InputManager to use it in the Update function.
+        // Construct a new InputManager
         iM = new InputManager(this);
     }
 
     protected override void Initialize()
     {
-        // Register GameComponent or call `iM.Update(gameTime)` in the Game's Update function
+        // The InputManager can be register as a GameComponent
         this.Components.Add(iM);
+
+        // Alternatively, you can manually handle calling the required methods
+        // `Initialize` and `Update` within the game class.
+
+        // Uncomment to manually handle the Initialize method call
+        // iM.Initialize();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        // Manually handling update calls
+        // Uncomment to manually handle Update method calls
         // iM.Update(gameTime);
 
         // Setting up the right values
