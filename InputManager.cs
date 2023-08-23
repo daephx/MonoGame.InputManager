@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -96,10 +96,10 @@ namespace A1r.Input
 
         public override void Update(GameTime gameTime)
         {
-            // Save the one and only (if available) keyboardstate 
+            // Save the one and only (if available) keyboardState
             previousKeyboardState = currentKeyboardState;
             currentKeyboardState = Keyboard.GetState();
-            // Save the one and only (if available) mousestate 
+            // Save the one and only (if available) mouseState
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
 
