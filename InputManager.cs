@@ -9,32 +9,39 @@ namespace A1r.Input
     public enum Input
     {
         None,
+
         // Center
         Home,
         Start,
         Back,
+
         // D-Pad
         Up,
         Left,
         Down,
         Right,
+
         // Face buttons
         FaceButtonUp,
         FaceButtonLeft,
         FaceButtonDown,
         FaceButtonRight,
+
         // Shoulder buttons
         LeftShoulder,
         RightShoulder,
+
         // Triggers
         LeftTrigger,
         RightTrigger,
+
         // Left Stick
         LeftStick,
         LeftStickUp,
         LeftStickLeft,
         LeftStickDown,
         LeftStickRight,
+
         // Right Stick
         RightStick,
         RightStickUp,
@@ -62,11 +69,13 @@ namespace A1r.Input
             public GamePadState PreviousState;
             public Dictionary<Input, Keys> KeyboardMap;
             public Dictionary<Input, MouseInput> MouseMap;
+
             public bool IsConnected()
             {
                 return GamePadIndex < 0 ? true : CurrentState.IsConnected;
             }
         }
+
         private List<Player> players;
         private GamePadDeadZone gamePadDeadZone = GamePadDeadZone.IndependentAxes;
         private Array inputValues;
@@ -82,7 +91,8 @@ namespace A1r.Input
         public float DeadzoneTriggers = 0.25f;
         public int PlayerCount = 1;
 
-        public InputManager(Game game) : base(game)
+        public InputManager(Game game)
+            : base(game)
         {
             inputValues = Enum.GetValues(typeof(Input));
             mouseValues = Enum.GetValues(typeof(MouseInput));
@@ -103,6 +113,7 @@ namespace A1r.Input
             // Save the one and only (if available) keyboardState
             previousKeyboardState = currentKeyboardState;
             currentKeyboardState = Keyboard.GetState();
+
             // Save the one and only (if available) mouseState
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
@@ -115,7 +126,7 @@ namespace A1r.Input
                     // Update gamepad state
                     player.PreviousState = player.CurrentState;
                     player.CurrentState = GamePad.GetState(player.GamePadIndex, gamePadDeadZone);
-                    players[i] = player;//TODO: needed?
+                    players[i] = player; //TODO: needed?
                 }
             }
             base.Update(gameTime);
@@ -130,10 +141,12 @@ namespace A1r.Input
         {
             return currentKeyboardState.IsKeyDown(key);
         }
+
         public bool IsPressed(MouseInput input)
         {
             return IsPressed(currentMouseState, input);
         }
+
         public bool IsPressed(Buttons button, int index)
         {
             var player = getPlayer(index);
@@ -141,6 +154,7 @@ namespace A1r.Input
                 return player.CurrentState.IsButtonDown(button);
             return false;
         }
+
         public bool IsPressed(Input input)
         {
             for (int i = 0; i < players.Count; i++)
@@ -148,6 +162,7 @@ namespace A1r.Input
                     return true;
             return false;
         }
+
         public bool IsPressed(Input input, int index)
         {
             var player = getPlayer(index);
@@ -156,10 +171,14 @@ namespace A1r.Input
                 switch (player.GamePadIndex)
                 {
                     case KEYBOARD_INDEX:
-                        Keys key = player.KeyboardMap.TryGetValue(input, out key) ? key : default(Keys);
+                        Keys key = player.KeyboardMap.TryGetValue(input, out key)
+                            ? key
+                            : default(Keys);
                         return currentKeyboardState.IsKeyDown(key);
                     case MOUSE_INDEX:
-                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse) ? mouse : default(MouseInput);
+                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse)
+                            ? mouse
+                            : default(MouseInput);
                         return IsPressed(currentMouseState, mouse);
                     default:
                         return IsPressed(player.CurrentState, input);
@@ -167,6 +186,7 @@ namespace A1r.Input
             }
             return false;
         }
+
         private bool IsPressed(GamePadState state, Input input)
         {
             switch (input)
@@ -224,6 +244,7 @@ namespace A1r.Input
             }
             return false;
         }
+
         private bool IsPressed(MouseState state, MouseInput input)
         {
             switch (input)
@@ -246,17 +267,21 @@ namespace A1r.Input
         {
             return currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyDown(key);
         }
+
         public bool IsHeld(MouseInput input)
         {
             return IsPressed(currentMouseState, input) && IsPressed(previousMouseState, input);
         }
+
         public bool IsHeld(Buttons button, int index)
         {
             var player = getPlayer(index);
             if (player != null && player.GamePadIndex >= 0)
-                return player.CurrentState.IsButtonDown(button) && player.PreviousState.IsButtonDown(button);
+                return player.CurrentState.IsButtonDown(button)
+                    && player.PreviousState.IsButtonDown(button);
             return false;
         }
+
         public bool IsHeld(Input input)
         {
             for (int i = 0; i < players.Count; i++)
@@ -264,6 +289,7 @@ namespace A1r.Input
                     return true;
             return false;
         }
+
         public bool IsHeld(Input input, int index)
         {
             var player = getPlayer(index);
@@ -272,13 +298,20 @@ namespace A1r.Input
                 switch (player.GamePadIndex)
                 {
                     case KEYBOARD_INDEX:
-                        Keys key = player.KeyboardMap.TryGetValue(input, out key) ? key : default(Keys);
-                        return currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyDown(key);
+                        Keys key = player.KeyboardMap.TryGetValue(input, out key)
+                            ? key
+                            : default(Keys);
+                        return currentKeyboardState.IsKeyDown(key)
+                            && previousKeyboardState.IsKeyDown(key);
                     case MOUSE_INDEX:
-                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse) ? mouse : default(MouseInput);
-                        return IsPressed(currentMouseState, mouse) && IsPressed(currentMouseState, mouse);
+                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse)
+                            ? mouse
+                            : default(MouseInput);
+                        return IsPressed(currentMouseState, mouse)
+                            && IsPressed(currentMouseState, mouse);
                     default:
-                        return IsPressed(player.CurrentState, input) && IsPressed(player.PreviousState, input);
+                        return IsPressed(player.CurrentState, input)
+                            && IsPressed(player.PreviousState, input);
                 }
             }
             return false;
@@ -288,17 +321,21 @@ namespace A1r.Input
         {
             return currentKeyboardState.IsKeyDown(key) && !previousKeyboardState.IsKeyDown(key);
         }
+
         public bool JustPressed(MouseInput input)
         {
             return IsPressed(currentMouseState, input) && !IsPressed(previousMouseState, input);
         }
+
         public bool JustPressed(Buttons button, int index)
         {
             var player = getPlayer(index);
             if (player != null && player.GamePadIndex >= 0)
-                return player.CurrentState.IsButtonDown(button) && !player.PreviousState.IsButtonDown(button);
+                return player.CurrentState.IsButtonDown(button)
+                    && !player.PreviousState.IsButtonDown(button);
             return false;
         }
+
         public bool JustPressed(Input input)
         {
             for (int i = 0; i < players.Count; i++)
@@ -306,6 +343,7 @@ namespace A1r.Input
                     return true;
             return false;
         }
+
         public bool JustPressed(Input input, int index)
         {
             var player = getPlayer(index);
@@ -314,13 +352,20 @@ namespace A1r.Input
                 switch (player.GamePadIndex)
                 {
                     case KEYBOARD_INDEX:
-                        Keys key = player.KeyboardMap.TryGetValue(input, out key) ? key : default(Keys);
-                        return currentKeyboardState.IsKeyDown(key) && !previousKeyboardState.IsKeyDown(key);
+                        Keys key = player.KeyboardMap.TryGetValue(input, out key)
+                            ? key
+                            : default(Keys);
+                        return currentKeyboardState.IsKeyDown(key)
+                            && !previousKeyboardState.IsKeyDown(key);
                     case MOUSE_INDEX:
-                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse) ? mouse : default(MouseInput);
-                        return IsPressed(currentMouseState, mouse) && !IsPressed(currentMouseState, mouse);
+                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse)
+                            ? mouse
+                            : default(MouseInput);
+                        return IsPressed(currentMouseState, mouse)
+                            && !IsPressed(currentMouseState, mouse);
                     default:
-                        return IsPressed(player.CurrentState, input) && !IsPressed(player.PreviousState, input);
+                        return IsPressed(player.CurrentState, input)
+                            && !IsPressed(player.PreviousState, input);
                 }
             }
             return false;
@@ -330,17 +375,21 @@ namespace A1r.Input
         {
             return !currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyDown(key);
         }
+
         public bool JustReleased(MouseInput input)
         {
             return !IsPressed(currentMouseState, input) && IsPressed(previousMouseState, input);
         }
+
         public bool JustReleased(Buttons button, int index)
         {
             var player = getPlayer(index);
             if (player != null && player.GamePadIndex >= 0)
-                return !player.CurrentState.IsButtonDown(button) && player.PreviousState.IsButtonDown(button);
+                return !player.CurrentState.IsButtonDown(button)
+                    && player.PreviousState.IsButtonDown(button);
             return false;
         }
+
         public bool JustReleased(Input input)
         {
             for (int i = 0; i < players.Count; i++)
@@ -348,6 +397,7 @@ namespace A1r.Input
                     return true;
             return false;
         }
+
         public bool JustReleased(Input input, int index)
         {
             var player = getPlayer(index);
@@ -356,13 +406,20 @@ namespace A1r.Input
                 switch (player.GamePadIndex)
                 {
                     case KEYBOARD_INDEX:
-                        Keys key = player.KeyboardMap.TryGetValue(input, out key) ? key : default(Keys);
-                        return !currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyDown(key);
+                        Keys key = player.KeyboardMap.TryGetValue(input, out key)
+                            ? key
+                            : default(Keys);
+                        return !currentKeyboardState.IsKeyDown(key)
+                            && previousKeyboardState.IsKeyDown(key);
                     case MOUSE_INDEX:
-                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse) ? mouse : default(MouseInput);
-                        return !IsPressed(currentMouseState, mouse) && IsPressed(currentMouseState, mouse);
+                        MouseInput mouse = player.MouseMap.TryGetValue(input, out mouse)
+                            ? mouse
+                            : default(MouseInput);
+                        return !IsPressed(currentMouseState, mouse)
+                            && IsPressed(currentMouseState, mouse);
                     default:
-                        return !IsPressed(player.CurrentState, input) && IsPressed(player.PreviousState, input);
+                        return !IsPressed(player.CurrentState, input)
+                            && IsPressed(player.PreviousState, input);
                 }
             }
             return false;
@@ -375,6 +432,7 @@ namespace A1r.Input
                     return true;
             return false;
         }
+
         public bool SomethingDown(int index)
         {
             var player = getPlayer(index);
@@ -409,6 +467,7 @@ namespace A1r.Input
             }
             return 0f;
         }
+
         public float GetRaw(Input input, int index)
         {
             var player = getPlayer(index);
@@ -454,10 +513,12 @@ namespace A1r.Input
             }
             return l != 0;
         }
+
         public int GetPlayerCount()
         {
             return players.Count;
         }
+
         public bool FindNewGamepads()
         {
             var found = false;
@@ -476,11 +537,7 @@ namespace A1r.Input
                 if (state.IsConnected)
                 {
                     found = true;
-                    AddGamepadPlayer(new Player()
-                    {
-                        GamePadIndex = j,
-                        CurrentState = state
-                    });
+                    AddGamepadPlayer(new Player() { GamePadIndex = j, CurrentState = state });
 
                     if (players.Count == PlayerCount)
                         break;
@@ -488,6 +545,7 @@ namespace A1r.Input
             }
             return found;
         }
+
         public void SetActivePlayers(List<int> playerIds)
         {
             var newPlayers = new List<Player>();
@@ -500,7 +558,9 @@ namespace A1r.Input
             players = newPlayers;
             PlayerCount = players.Count;
         }
+
         /* Gamepad Methods */
+
         private void AddGamepadPlayer(Player player)
         {
             for (int i = 0, l = players.Count; i < l; i++)
@@ -514,6 +574,7 @@ namespace A1r.Input
             }
             players.Add(player);
         }
+
         public bool SetGamepadVibration(int index, float left, float right)
         {
             var player = getPlayer(index);
@@ -521,6 +582,7 @@ namespace A1r.Input
                 ? false
                 : GamePad.SetVibration(player.GamePadIndex, left, right);
         }
+
         public GamePadCapabilities GetCapabilities(int index)
         {
             var player = getPlayer(index);
@@ -528,7 +590,9 @@ namespace A1r.Input
                 ? new GamePadCapabilities()
                 : GamePad.GetCapabilities(player.GamePadIndex);
         }
+
         /* Keyboard Methods */
+
         public void AddKeyboardPlayer(Dictionary<Input, Keys> map)
         {
             if (map != null)
@@ -539,7 +603,9 @@ namespace A1r.Input
                 players.Add(keyboardPlayer);
             }
         }
+
         /* Mouse Methods */
+
         public void AddMousePlayer(Dictionary<Input, MouseInput> map)
         {
             if (map != null)
@@ -550,14 +616,18 @@ namespace A1r.Input
                 players.Add(mousePlayer);
             }
         }
+
         public Point GetMousePosition()
         {
             return currentMouseState.Position;
         }
+
         public bool IsMouseMoved()
         {
-            return currentMouseState.X != previousMouseState.X || currentMouseState.Y != previousMouseState.Y;
+            return currentMouseState.X != previousMouseState.X
+                || currentMouseState.Y != previousMouseState.Y;
         }
+
         public int GetMouseScroll()
         {
             return currentMouseState.ScrollWheelValue - previousMouseState.ScrollWheelValue;
