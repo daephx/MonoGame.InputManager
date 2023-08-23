@@ -528,7 +528,7 @@ namespace A1r.Input
             {
                 var player = players[i];
                 if (player.GamePadIndex >= 0)
-                    indices.RemoveAt(player.GamePadIndex);
+                    indices.Remove(player.GamePadIndex);
             }
 
             foreach (var j in indices)
